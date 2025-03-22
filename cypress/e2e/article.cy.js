@@ -8,7 +8,6 @@ describe('Article', () => {
   const articlePage = new ArticlePageObject();
   let user;
   let article;
-  let token;
 
   before(() => {
     cy.task('generateUser').then((generateUser) => {
@@ -19,12 +18,7 @@ describe('Article', () => {
   beforeEach(() => {
     cy.task('db:clear');
     homePage.visit();
-    cy.login(user.email, user.username, user.password).then(() => {
-      cy.getCookie('auth').then((cookie) => {
-        token = cookie.value;
-      });
-    });
-
+    cy.login(user.email, user.username, user.password);
     cy.task('generateArticle').then((generateArticle) => {
       article = generateArticle;
     });
