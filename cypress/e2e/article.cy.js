@@ -1,24 +1,60 @@
 /// <reference types="cypress" />
 /// <reference types="../support" />
+import HomePageObject from '../support/pages/home.pageObject';
+import ArticlePageObject from '../support/pages/article.pageObject';
 
 describe('Article', () => {
-  before(() => {
+  const homePage = new HomePageObject();
+  const articlePage = new ArticlePageObject();
+  let user;
+  let article;
+  let token;
 
+  before(() => {
+    cy.task('generateUser').then((generateUser) => {
+      user = generateUser;
+    });
   });
 
   beforeEach(() => {
     cy.task('db:clear');
+    homePage.visit();
+    cy.login(user.email, user.username, user.password).then(() => {
+      cy.getCookie('auth').then((cookie) => {
+        token = cookie.value;
+      });
+    });
+
+    cy.task('generateArticle').then((generateArticle) => {
+      article = generateArticle;
+    });
   });
 
   it('should be created using New Article form', () => {
-
+    articlePage.visit();
+    articlePage.typeTitle(article.title);
+    articlePage.typeDescription(article.description);
+    articlePage.typeBody(article.body);
+    articlePage.clickPublishArticleBtn();
   });
 
   it('should be edited using Edit button', () => {
-
+    cy.createArticle(article.title, article.description, article.body)
+      .then((response) => {
+        articlePage.visit(`article/${response.body.article.slug}`);
+        articlePage.editArticleBtn.first().click();
+        articlePage.typeTitle(article.title);
+        articlePage.typeDescription(article.description);
+        articlePage.typeBody(article.body);
+        articlePage.clickPublishArticleBtn();
+      });
   });
 
   it('should be deleted using Delete button', () => {
-
+    cy.createArticle(article.title, article.description, article.body)
+      .then((response) => {
+        articlePage.visit(`article/${response.body.article.slug}`);
+        articlePage.deleteArticleBtn.first().click();
+      });
   });
 });
