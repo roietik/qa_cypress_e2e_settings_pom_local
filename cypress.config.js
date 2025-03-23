@@ -27,6 +27,21 @@ module.exports = defineConfig({
             body: body,
           };
         },
+        generateSettings() {
+          const url = faker.internet.url();
+          const username = faker.internet.userName();
+          const bio = faker.lorem.paragraph();
+          const email = faker.internet.email();
+          const password = faker.internet.password();
+
+          return {
+            url: url,
+            username: username,
+            bio: bio,
+            email: email,
+            password: password
+          };
+        },
         'db:clear'() {
           clear();
           return null;
