@@ -38,10 +38,8 @@ describe('Settings page', () => {
   });
 
   it('should provide an ability to update an email', () => {
-    // settingsPage.emailField.clear();
     settingsPage.typeEmail(settings.email);
     settingsPage.clickUpdateBtn();
-
   });
 
   it('should provide an ability to update password', () => {
